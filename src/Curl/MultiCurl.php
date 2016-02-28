@@ -43,10 +43,11 @@ class MultiCurl
      * @param  $url
      * @param  $query_parameters
      * @param  $data
+     * @param  $header
      *
      * @return object
      */
-    public function addDelete($url, $query_parameters = array(), $data = array())
+    public function addDelete($url, $query_parameters = array(), $data = array(),$header = array())
     {
         if (is_array($url)) {
             $data = $query_parameters;
@@ -54,6 +55,9 @@ class MultiCurl
             $url = $this->baseUrl;
         }
         $curl = new Curl();
+        foreach($header as $key=>$value)
+            $curl->setHeader($key,$value);
+
         $curl->setURL($url, $query_parameters);
         $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'DELETE');
         $curl->setOpt(CURLOPT_POSTFIELDS, $curl->buildPostData($data));
@@ -98,16 +102,23 @@ class MultiCurl
      * @access public
      * @param  $url
      * @param  $data
+     * @param  $header
      *
      * @return object
      */
-    public function addGet($url, $data = array())
+    public function addGet($url, $data = array(),$header = array())
     {
+
         if (is_array($url)) {
             $data = $url;
             $url = $this->baseUrl;
         }
         $curl = new Curl();
+
+        foreach($header as $key=>$value)
+            $curl->setHeader($key,$value);
+
+
         $curl->setURL($url, $data);
         $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'GET');
         $curl->setOpt(CURLOPT_HTTPGET, true);
@@ -191,10 +202,11 @@ class MultiCurl
      * @access public
      * @param  $url
      * @param  $data
+     * @param  $header
      *
      * @return object
      */
-    public function addPost($url, $data = array())
+    public function addPost($url, $data = array(),$header= array())
     {
         if (is_array($url)) {
             $data = $url;
@@ -206,6 +218,10 @@ class MultiCurl
         if (is_array($data) && empty($data)) {
             $curl->unsetHeader('Content-Length');
         }
+
+
+        foreach($header as $key=>$value)
+            $curl->setHeader($key,$value);
 
         $curl->setURL($url);
         $curl->setOpt(CURLOPT_CUSTOMREQUEST, 'POST');
@@ -591,6 +607,7 @@ class MultiCurl
             $curl->beforeSend($this->beforeSendFunction);
         }
         if ($curl->successFunction === null) {
+
             $curl->success($this->successFunction);
         }
         if ($curl->errorFunction === null) {
