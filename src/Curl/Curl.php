@@ -2135,6 +2135,15 @@ class Curl
     private function parseResponse($response_headers, $raw_response)
     {
         $response = $raw_response;
+
+        if (isset($response_headers['Content-Encoding']) && $response_headers['Content-Encoding'] === 'gzip') {
+            // Use @ to suppress message "Warning gzdecode(): data error".
+            $decoded_response = @gzdecode($response);
+            if ($decoded_response !== false) {
+                $response = $decoded_response;
+            }
+        }
+        
         if (isset($response_headers['Content-Type'])) {
             if (preg_match($this->jsonPattern, $response_headers['Content-Type'])) {
                 if ($this->jsonDecoder) {
@@ -2152,14 +2161,6 @@ class Curl
                 if ($this->defaultDecoder) {
                     $response = call_user_func($this->defaultDecoder, $response);
                 }
-            }
-        }
-
-        if (isset($response_headers['Content-Encoding']) && $response_headers['Content-Encoding'] === 'gzip') {
-            // Use @ to suppress message "Warning gzdecode(): data error".
-            $decoded_response = @gzdecode($response);
-            if ($decoded_response !== false) {
-                $response = $decoded_response;
             }
         }
 
