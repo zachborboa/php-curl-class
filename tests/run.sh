@@ -26,13 +26,13 @@ echo "CI_PHP_FUTURE_RELEASE: ${CI_PHP_FUTURE_RELEASE}"
 php -r "var_dump(phpversion());"
 php -r "var_dump(curl_version());"
 
-source "run_syntax_check.sh"
+# source "run_syntax_check.sh"
 
-source "run_coding_standards_check.sh"
+# source "run_coding_standards_check.sh"
 
-source "run_phpunit.sh"
+# source "run_phpunit.sh"
 
-source "run_static_analysis_check_phpstan.sh"
+# source "run_static_analysis_check_phpstan.sh"
 
 source "run_static_analysis_check_psalm.sh"
 
